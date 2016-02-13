@@ -16,6 +16,9 @@ public class ServidorCalculadora {
 
     public static void main(String[] args) {
 
+        // Mostramos un mensaje por pantalla
+        System.out.println("Esperant instruccions");
+
         try {
             // Creamos nuestro socket
             ServerSocket servidorSocket = new ServerSocket();
@@ -27,16 +30,11 @@ public class ServidorCalculadora {
             InputStream input = listener.getInputStream();
             OutputStream output = listener.getOutputStream();
 
-            // Mostramos un mensaje por pantalla
-            System.out.println("\nEl servidor esta esperando instrucciones");
-
             // Array de bytes en el que almacenamos el mensaje
             byte[] mensaje = new byte[30];
             input.read(mensaje);
 
-            System.out.println("\nSe ha recibido una operación de la IP: " + listener.getInetAddress().toString() + "/" + listener.getLocalPort());
-
-
+            System.out.println("\nS'ha rebut una operacio desde la IP: " + listener.getInetAddress().toString() + "/" + listener.getLocalPort());
 
            Integer contador = 0; // Creamos un contador con el que sabremos el tamaño del mensaje
 
@@ -51,16 +49,16 @@ public class ServidorCalculadora {
             }
 
             // Creamos el array de bytes con el tamaño necesario
-            byte[] mensajeLimpio = new byte[contador];
+            byte[] mensajeConstruido = new byte[contador];
 
             // Pasamos nuetro mensaje al array del tamaño preciso
-            for (int iterador = 0; iterador < mensajeLimpio.length; iterador++){
-                mensajeLimpio[iterador] = mensaje[iterador];
+            for (int iterador = 0; iterador < mensajeConstruido.length; iterador++){
+                mensajeConstruido[iterador] = mensaje[iterador];
             }
 
             // Lo pasamos a string
-            String opreacion = new String(mensajeLimpio);
-            System.out.println("\nOperación -> " + opreacion);
+            String opreacion = new String(mensajeConstruido);
+            System.out.println("\n- Operació:  " + opreacion);
 
             // Enviamos la operación al cliente
             output.write(calcular(opreacion).getBytes());
@@ -69,13 +67,13 @@ public class ServidorCalculadora {
             String resultado = calcular(opreacion);
 
             // Imprimimos el resultado de la operación en pantalla
-            System.out.println("\nResultado de la operación: " + resultado);
+            System.out.println("\n- Resultat de la operació: " + resultado);
 
             // Construimos el array que encajaremos en nuestro log
-            String datosConexion = "\n\nFECHA: " + new Date().toString() +
+            String datosConexion = "\n\nDATA: " + new Date().toString() +
                     "\nIP: "+listener.getInetAddress().toString() + "/" + listener.getLocalPort() +
-                    "\nOPERACIÓN: " + opreacion +
-                    "\nRESULTADO: " + resultado;
+                    "\nOPERACIO: " + opreacion +
+                    "\nRESULTAT: " + resultado;
 
 
             // Cerramos todas las conexiones
@@ -90,18 +88,18 @@ public class ServidorCalculadora {
         catch (IOException e){}
     }
 
-    public static String calcular(String msg){
+    public static String calcular(String operacion){
 
         // Esto es auxiliar para hacer las operaciones de manera automatica
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
         // Creamos un string con el texto que aparecerá en caso de error.
-        String resultado = "La operacion introducida no es valida";
+        String resultado = "La operació no és vàlida";
 
         try {
             // Intentamos calcular el resultado. En caso de ser invalido, el string se quedará con el valor que le dimos antes
-            resultado = engine.eval(msg).toString();
+            resultado = engine.eval(operacion).toString();
         }
 
         catch (ScriptException e) {}
@@ -114,19 +112,18 @@ public class ServidorCalculadora {
         try {
 
             // Ruta del archivo en el que escribiremos
-            File log = new File("/home/46465442z/Escriptori/IdeaProjects/Example_Sockets/src/Calculadora/log.txt");
+            File log = new File("/home/sergi/IdeaProjects/Example_Sockets/src/Calculadora/registre.txt");
 
             // Creamos un buffered writer que escribirá en el archivo info. True significa que no sobreescribirá el contenido
             BufferedWriter bufferedWr = new BufferedWriter(new FileWriter(log, true));
 
-            // si el archivo ya existe, automaticamente empieza a escribir.
-            if (log.exists()) {
-                bufferedWr.write(arrayAEscribir);
-            }
-            else {  // Si no, crea el archivo y escribe
+            // si el archivo no existee, lo crea
+            if (!log.exists()) {
                 log.createNewFile();
-                bufferedWr.write(arrayAEscribir);
             }
+
+            // Escribimos en el archivo
+            bufferedWr.write(arrayAEscribir);
 
             // Cerramos el buffered writer
             bufferedWr.close();

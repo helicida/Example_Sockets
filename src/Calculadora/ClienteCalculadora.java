@@ -17,7 +17,7 @@ public class ClienteCalculadora {
     public static void main(String[] args) {
 
         // Imprimimos un mensaje
-        System.out.println("Introduce una operación");
+        System.out.println("Introdueix una operació");
             String operacionAEnviar = teclat.nextLine();
 
         try {
@@ -33,12 +33,12 @@ public class ClienteCalculadora {
             // Traducimos y enviamos la operación como bytes
             output.write(operacionAEnviar.getBytes());
 
-            Integer contador = 0;   // Creamos un contador con el que sabremos el tamaño del mensaje
-
             byte[] mensaje = new byte[10];  // Array de bytes en el que reconstruiremos el mensaje
 
             // Recibimos la operación
             input.read(mensaje);
+
+            Integer contador = 0;   // Creamos un contador con el que sabremos el tamaño del mensaje
 
             // Usamos este for para contar cuantos bytes necesitamos para nuestro mensaje
             for (int iterador = 0; iterador < mensaje.length; iterador++)  {
@@ -51,16 +51,16 @@ public class ClienteCalculadora {
             }
 
             // Creamos el array de bytes con el tamaño necesario
-            byte[] mensajeLimpio = new byte[contador];
+            byte[] mensajeConstruido = new byte[contador];
 
             // Pasamos nuetro mensaje al array del tamaño preciso
-            for (int iterador = 0; iterador < mensajeLimpio.length; iterador++) {
-                mensajeLimpio[iterador] = mensaje[iterador];
+            for (int iterador = 0; iterador < mensajeConstruido.length; iterador++) {
+                mensajeConstruido[iterador] = mensaje[iterador];
             }
 
             // Lo pasamos a string y lo imprimimos en pantalla
-            String resultado = new String(mensajeLimpio);
-            System.out.println("\nEl resultado es: " + resultado);
+            String resultado = new String(mensajeConstruido);
+            System.out.println("\nEl resultat és: " + resultado);
 
             // Cerramos todas las conexiones
             clienteSocket.close();

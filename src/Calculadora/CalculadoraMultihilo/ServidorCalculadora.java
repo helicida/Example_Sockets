@@ -1,4 +1,4 @@
-package Calculadora;
+package Calculadora.CalculadoraMultihilo;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -117,7 +117,7 @@ public class ServidorCalculadora {
             // Creamos un buffered writer que escribirá en el archivo info. True significa que no sobreescribirá el contenido
             BufferedWriter bufferedWr = new BufferedWriter(new FileWriter(log, true));
 
-            // si el archivo no existee, lo crea
+            // Si el archivo no existe, lo crea
             if (!log.exists()) {
                 log.createNewFile();
             }

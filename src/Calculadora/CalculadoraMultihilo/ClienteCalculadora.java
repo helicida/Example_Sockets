@@ -1,4 +1,4 @@
-package Calculadora;
+package Calculadora.CalculadoraMultihilo;
 
 import java.io.IOException;
 import java.io.InputStream;

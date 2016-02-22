@@ -1,32 +1,29 @@
-package Calculadora.CalculadoraBasica;
+package Calculadora.CalculadoraMultihilo;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 
 /**
- * Created by sergi on 7/02/16.
+ * Created by sergi on 22/02/16.
  */
-public class ServidorCalculadora {
+public class Hilo extends Thread{
 
-    public static void main(String[] args) {
+    private static Socket listener;
 
-        // Mostramos un mensaje por pantalla
-        System.out.println("Esperant instruccions");
+    // Constructor que usamos para pasarle el listener y devolver los resultados al PC correcto
+    public Hilo (Socket listener){
+        this.listener = listener;
+    }
 
-        try {
-            // Creamos nuestro socket
-            ServerSocket servidorSocket = new ServerSocket();
-            InetSocketAddress address = new InetSocketAddress("localhost", 5555);
+    public void run(){
 
-            // Acoplamos el InetSocketAdress al socket y los ponemos a escuchar
-            servidorSocket.bind(address);
-            Socket listener = servidorSocket.accept();
+        try{
+
+            //Los ponemos a escuchar
             InputStream input = listener.getInputStream();
             OutputStream output = listener.getOutputStream();
 
@@ -36,7 +33,7 @@ public class ServidorCalculadora {
 
             System.out.println("\nS'ha rebut una operacio desde la IP: " + listener.getInetAddress().toString() + "/" + listener.getLocalPort());
 
-           Integer contador = 0; // Creamos un contador con el que sabremos el tamaño del mensaje
+            Integer contador = 0; // Creamos un contador con el que sabremos el tamaño del mensaje
 
             // Usamos este for para contar cuantos bytes necesitamos para nuestro mensaje
             for (int iterador = 0; iterador < mensaje.length; iterador++){
@@ -78,7 +75,6 @@ public class ServidorCalculadora {
 
             // Cerramos todas las conexiones
             listener.close();
-            servidorSocket.close();
             input.close();
             output.close();
 
@@ -86,25 +82,6 @@ public class ServidorCalculadora {
             escribirLog(datosConexion);
         }
         catch (IOException e){}
-    }
-
-    public static String calcular(String operacion){
-
-        // Esto es auxiliar para hacer las operaciones de manera automatica
-        ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine engine = mgr.getEngineByName("JavaScript");
-
-        // Creamos un string con el texto que aparecerá en caso de error.
-        String resultado = "La operació no és vàlida";
-
-        try {
-            // Intentamos calcular el resultado. En caso de ser invalido, el string se quedará con el valor que le dimos antes
-            resultado = engine.eval(operacion).toString();
-        }
-
-        catch (ScriptException e) {}
-
-        return resultado;   // Devolvemos un string con el resultado
     }
 
     public static void escribirLog(String arrayAEscribir){
@@ -129,5 +106,24 @@ public class ServidorCalculadora {
             bufferedWr.close();
 
         } catch (IOException e) {}
+    }
+
+    public static String calcular(String operacion){
+
+        // Esto es auxiliar para hacer las operaciones de manera automatica
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+
+        // Creamos un string con el texto que aparecerá en caso de error.
+        String resultado = "La operació no és vàlida";
+
+        try {
+            // Intentamos calcular el resultado. En caso de ser invalido, el string se quedará con el valor que le dimos antes
+            resultado = engine.eval(operacion).toString();
+        }
+
+        catch (ScriptException e) {}
+
+        return resultado;   // Devolvemos un string con el resultado
     }
 }

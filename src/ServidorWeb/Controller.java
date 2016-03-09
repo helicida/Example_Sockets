@@ -15,14 +15,14 @@ public class Controller {
         try  {
             // Creamos nuestro ServerSocket y le damos una dirección
             ServerSocket servidorSocket = new ServerSocket();
-            InetSocketAddress address = new InetSocketAddress("0.0.0.0", 5555);
+            InetSocketAddress address = new InetSocketAddress("0.0.0.0", 9090);
 
             // Acoplamos el InetSocketAdress al socket y los ponemos a escuchar
             servidorSocket.bind(address);
 
             // Bucle en el que se arranca un hilo por cada petición de acceso a la web
-            // NOTA: MUY MUY MUY recomendable no hacer más de una conexión a la vez
-            // Ya que el buffer es de un tamaño pequeño y se puede sobrecargar, provocando
+            // NOTA: MUY MUY MUY recomendable no hacer demasiadas conexiones a la vez
+            // Ya que el buffer se puede sobrecargar, provocando
             // excepciones (java.lang.OutOfMemoryError) y fugas de memoria)
             while (true){
                 Socket listener = servidorSocket.accept();
